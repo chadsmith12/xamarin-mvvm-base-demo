@@ -1,4 +1,6 @@
-﻿using Xamarin.Forms;
+﻿using TripLog.Interfaces;
+using TripLog.ViewModels;
+using Xamarin.Forms;
 
 namespace TripLog.Views
 {
@@ -6,6 +8,7 @@ namespace TripLog.Views
     {
         public NewEntryPage()
         {
+            BindingContext = new NewEntryViewModel(DependencyService.Get<INavigationService>());
             Title = "New Entry";
 
             // Form Fields
@@ -15,6 +18,16 @@ namespace TripLog.Views
             var date = new EntryCell {Label = "Date"};
             var rating = new EntryCell {Label = "Rating", Keyboard = Keyboard.Numeric};
             var notes = new EntryCell {Label = "Notes"};
+            // toolbar
+            var save = new ToolbarItem { Text = "Save" };
+            // set bindings
+            title.SetBinding(EntryCell.TextProperty, "Title", BindingMode.TwoWay);
+            latitude.SetBinding(EntryCell.TextProperty, "Latitude", BindingMode.TwoWay);
+            longitude.SetBinding(EntryCell.TextProperty, "Longitude", BindingMode.TwoWay);
+            date.SetBinding(EntryCell.TextProperty, "Date", BindingMode.TwoWay, stringFormat: "{0:d}");
+            rating.SetBinding(EntryCell.TextProperty, "Rating", BindingMode.TwoWay);
+            notes.SetBinding(EntryCell.TextProperty, "Notes", BindingMode.TwoWay);
+            save.SetBinding(MenuItem.CommandProperty, "SaveCommand");
 
             // Form
             var entryForm = new TableView
@@ -28,9 +41,6 @@ namespace TripLog.Views
                     }
                 }
             };
-
-            // toolbar
-            var save = new ToolbarItem {Text = "Save"};
             ToolbarItems.Add(save);
 
             Content = entryForm;

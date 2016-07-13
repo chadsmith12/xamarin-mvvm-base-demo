@@ -37,13 +37,20 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DetailPage.cs" />
-    <Compile Include="NewEntryPage.cs" />
+    <Compile Include="Interfaces\INavigationService.cs" />
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Services\NavigationService.cs" />
+    <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\DetailViewModel.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\NewEntryViewModel.cs" />
+    <Compile Include="Views\DetailPage.cs" />
+    <Compile Include="Views\NewEntryPage.cs" />
     <Compile Include="TripLogPage.xaml.cs">
       <DependentUpon>TripLogPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MainPage.cs" />
+    <Compile Include="Views\MainPage.cs" />
     <Compile Include="Models\TripLogEntry.cs" />
   </ItemGroup>
   <ItemGroup>
