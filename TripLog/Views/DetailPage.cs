@@ -24,7 +24,7 @@ namespace TripLog.Views
                 };
             };
             Title = "Entry Details";
-            BindingContext = new DetailViewModel(DependencyService.Get<INavigationService>());
+            
 
             var mainlayout = new Grid
             {

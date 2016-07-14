@@ -1,6 +1,8 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using TripLog.Droid.Modules;
+using TripLog.Modules;
 
 namespace TripLog.Droid
 {
@@ -17,7 +19,7 @@ namespace TripLog.Droid
 			global::Xamarin.Forms.Forms.Init(this, bundle);
 			Xamarin.FormsMaps.Init(this, bundle);
 
-			LoadApplication(new App());
+			LoadApplication(new App(new PlatformModules()));
 		}
 	}
 }

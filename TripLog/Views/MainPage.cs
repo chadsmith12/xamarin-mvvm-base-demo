@@ -13,7 +13,6 @@ namespace TripLog.Views
         public MainPage()
         {
             Title = "Triplog";
-            BindingContext = new MainViewModel(DependencyService.Get<INavigationService>());
 
             var itemTemplate = new DataTemplate(typeof(TextCell));
             itemTemplate.SetBinding(TextCell.TextProperty, "Title");
@@ -21,7 +20,8 @@ namespace TripLog.Views
 
             // toolbar
             var newButton = new ToolbarItem {Text = "New"};
-            newButton.SetBinding(MenuItem.CommandProperty, "NewCommand");
+            //newButton.SetBinding(MenuItem.CommandProperty, "NewCommand");
+            newButton.SetBinding<MainViewModel>(MenuItem.CommandProperty, m => m.NewCommand);
             ToolbarItems.Add(newButton);
 
             var entries = new ListView

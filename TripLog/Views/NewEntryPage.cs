@@ -8,7 +8,6 @@ namespace TripLog.Views
     {
         public NewEntryPage()
         {
-            BindingContext = new NewEntryViewModel(DependencyService.Get<INavigationService>());
             Title = "New Entry";
 
             // Form Fields

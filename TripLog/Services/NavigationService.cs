@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using TripLog.Interfaces;
-using TripLog.Services;
 using TripLog.ViewModels;
 using Xamarin.Forms;
 
-[assembly: Dependency(typeof(NavigationService))]
 namespace TripLog.Services
 {
     public class NavigationService : INavigationService
@@ -105,6 +102,10 @@ namespace TripLog.Services
             // get the empty constructor for this view
             var constructor = viewType.GetTypeInfo().DeclaredConstructors.FirstOrDefault(c => c.GetParameters().Length <= 0);
             var view = constructor.Invoke(null) as Page;
+
+            // set the view model of the page
+            var vm = ((App) Application.Current).Kernel.GetService(viewModelType);
+            view.BindingContext = vm;
 
             // push this view onto the navigation stack
             await Navigation.PushAsync(view, true);

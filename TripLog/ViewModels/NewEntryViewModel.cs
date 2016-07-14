@@ -16,6 +16,9 @@ namespace TripLog.ViewModels
         private int _rating;
         private string _notes;
         private Command _saveCommand;
+        private readonly ILocationService _locationService;
+
+
         #endregion
 
         #region Properties
@@ -92,8 +95,9 @@ namespace TripLog.ViewModels
 
         #region Constructors
 
-        public NewEntryViewModel(INavigationService navigationService) : base(navigationService)
+        public NewEntryViewModel(INavigationService navigationService, ILocationService locationService) : base(navigationService)
         {
+            _locationService = locationService;
             Date = DateTime.Today;
             Rating = 1;
         }
@@ -120,9 +124,11 @@ namespace TripLog.ViewModels
         #endregion
 
         #region Public Methods
-        public override Task Init()
+        public override async Task Init()
         {
-            return new Task(() => {});
+            var coords = await _locationService.GetGeoCoordinatesAsync();
+            Latitude = coords.Latitude;
+            Longitude = coords.Longitude;
         }
         #endregion
     }
