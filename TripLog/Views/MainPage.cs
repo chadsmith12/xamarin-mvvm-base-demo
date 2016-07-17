@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using TripLog.Converters;
 using TripLog.Interfaces;
+using TripLog.Models;
 using TripLog.ViewModels;
 using Xamarin.Forms;
 
@@ -29,14 +31,30 @@ namespace TripLog.Views
                 ItemTemplate = itemTemplate
             };
 
-            entries.SetBinding(ListView.ItemsSourceProperty, "LogEntries");
+            entries.SetBinding(ListView.ItemsSourceProperty, "LogEntries", converter: new ReverseBooleanConverter());
             entries.ItemTapped += (sender, e) =>
             {
                 var item = (TripLogEntry) e.Item;
                 Vm.ViewCommand.Execute(item);
             };
 
-            Content = entries;
+            var loading = new StackLayout
+            {
+                Orientation = StackOrientation.Vertical,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center,
+                Children =
+                {
+                    new ActivityIndicator {IsRunning = true},
+                    new Label {Text = "Loading Entries..."}
+                }
+            };
+
+            // set the loading binding to show when busy
+            loading.SetBinding<MainViewModel>(StackLayout.IsVisibleProperty, p => p.IsBusy);
+            var mainLayout = new Grid {Children = { entries, loading}};
+
+            Content = mainLayout;
         }
 
         protected override async void OnAppearing()

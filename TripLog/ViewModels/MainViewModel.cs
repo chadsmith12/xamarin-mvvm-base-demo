@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using TripLog.Interfaces;
+using TripLog.Models;
 using Xamarin.Forms;
 
 namespace TripLog.ViewModels
@@ -16,6 +13,8 @@ namespace TripLog.ViewModels
         ObservableCollection<TripLogEntry> _logEntries;
         private Command<TripLogEntry> _viewCommand;
         private Command _newCommand;
+
+        private readonly ITripLogApiService _tripApiService;
 
         #endregion
 
@@ -34,11 +33,12 @@ namespace TripLog.ViewModels
 
         #region Constructor
 
-        public MainViewModel(INavigationService navigationService) : base(navigationService)
+        public MainViewModel(INavigationService navigationService, ITripLogApiService tripApiService) : base(navigationService)
         {
+            _tripApiService = tripApiService;
             LogEntries = new ObservableCollection<TripLogEntry>();
-
         }
+
         #endregion
 
         #region Public Methods
@@ -52,15 +52,23 @@ namespace TripLog.ViewModels
 
         private async Task LoadEntries()
         {
-            LogEntries.Clear();
+            // we are already busy, don't try to do it again
+            if (IsBusy)
+                return;
 
-            // load up all entries in a background task
-            await Task.Factory.StartNew(() =>
+            IsBusy = true;
+
+            try
             {
-                LogEntries.Add(new TripLogEntry("Washington Monument", 38.8895, -77.0352, new DateTime(2015, 2, 5), 3, "Amazing"));
-                LogEntries.Add(new TripLogEntry("Statue of Liberty", 40.6892, -74.0444, new DateTime(2015, 4, 13), 4, "Inspiring!!"));
-                LogEntries.Add(new TripLogEntry("Golden Gate Bridge", 37.8268, -122.4789, new DateTime(2015, 4, 26), 5, "Foggy, but beautiful!!"));
-            });
+                var entries = await _tripApiService.GetEntriesAsync();
+                LogEntries = new ObservableCollection<TripLogEntry>(entries);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+            IsBusy = false;
         }
         #endregion
 

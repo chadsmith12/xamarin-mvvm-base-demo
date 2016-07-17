@@ -12,6 +12,27 @@ namespace TripLog.ViewModels
 {
     public abstract class BaseViewModel : INotifyPropertyChanged
     {
+        private bool _isBusy;
+
+        public bool IsBusy
+        {
+            get
+            {
+                return _isBusy;
+            }
+            set
+            {
+                _isBusy = value;
+                OnPropertyChanged();
+                OnIsBusyChanged();
+            }
+        }
+
+        protected virtual void OnIsBusyChanged()
+        {
+            // 
+        }
+
         protected INavigationService NavigationService { get; private set; }
         protected BaseViewModel(INavigationService navigationService)
         {

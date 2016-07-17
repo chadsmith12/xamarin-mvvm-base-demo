@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TripLog.Interfaces;
+using TripLog.Models;
 using Xamarin.Forms;
 
 namespace TripLog.ViewModels
@@ -17,6 +18,7 @@ namespace TripLog.ViewModels
         private string _notes;
         private Command _saveCommand;
         private readonly ILocationService _locationService;
+        private readonly ITripLogApiService _tripLogApiService;
 
 
         #endregion
@@ -95,9 +97,10 @@ namespace TripLog.ViewModels
 
         #region Constructors
 
-        public NewEntryViewModel(INavigationService navigationService, ILocationService locationService) : base(navigationService)
+        public NewEntryViewModel(INavigationService navigationService, ILocationService locationService, ITripLogApiService tripLogApiService) : base(navigationService)
         {
             _locationService = locationService;
+            _tripLogApiService = tripLogApiService;
             Date = DateTime.Today;
             Rating = 1;
         }
@@ -114,11 +117,22 @@ namespace TripLog.ViewModels
 
         private async Task ExecuteSaveCommand()
         {
+            if (IsBusy)
+                return;
+
+            IsBusy = true;
             var newItem = new TripLogEntry(this.Title, this.Latitude, this.Longitude, this.Date, this.Rating, this.Notes);
 
-            //TODO: Implement logic persist entry later
 
-            await NavigationService.GoBack();
+            try
+            {
+                await _tripLogApiService.SaveEntryAsync(newItem);
+                await NavigationService.GoBack();
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         #endregion
@@ -126,9 +140,16 @@ namespace TripLog.ViewModels
         #region Public Methods
         public override async Task Init()
         {
+            if (IsBusy)
+                return;
+
+            IsBusy = true;
+
             var coords = await _locationService.GetGeoCoordinatesAsync();
             Latitude = coords.Latitude;
             Longitude = coords.Longitude;
+
+            IsBusy = false;
         }
         #endregion
     }

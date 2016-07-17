@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TripLog.Interfaces;
+using TripLog.Models;
 
 namespace TripLog.ViewModels
 {
