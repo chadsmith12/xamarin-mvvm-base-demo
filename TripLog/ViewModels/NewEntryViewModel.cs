@@ -106,6 +106,22 @@ namespace TripLog.ViewModels
         }
         #endregion
 
+        #region Public Methods
+        public override async Task Init()
+        {
+            if (IsBusy)
+                return;
+
+            IsBusy = true;
+
+            var coords = await _locationService.GetGeoCoordinatesAsync();
+            Latitude = coords.Latitude;
+            Longitude = coords.Longitude;
+
+            IsBusy = false;
+        }
+        #endregion
+
         #region Commands
 
         public Command SaveCommand => _saveCommand ?? (_saveCommand = new Command(async () =>  await ExecuteSaveCommand(), CanSave));
@@ -137,20 +153,5 @@ namespace TripLog.ViewModels
 
         #endregion
 
-        #region Public Methods
-        public override async Task Init()
-        {
-            if (IsBusy)
-                return;
-
-            IsBusy = true;
-
-            var coords = await _locationService.GetGeoCoordinatesAsync();
-            Latitude = coords.Latitude;
-            Longitude = coords.Longitude;
-
-            IsBusy = false;
-        }
-        #endregion
     }
 }
